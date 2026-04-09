@@ -5,8 +5,8 @@ import MainSlider from "@/components/MainSlider";
 
 const Home = () => {
   return (
-    <div>
-      <div className="bg-[oklch(37%_0.013_285.805_/_0.6)]">
+    <div className="bg-[oklch(37%_0.013_285.805_/_0.6)]">
+      <div className="pt-16">
         <Header />
         <MainSlider />
         <CategorySection />

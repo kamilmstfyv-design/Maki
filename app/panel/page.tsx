@@ -2,15 +2,23 @@
 
 import React from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   HiOutlinePhotograph,
   HiOutlineCollection,
   HiOutlineShoppingBag,
-  HiOutlineChartBar,
   HiOutlineLogout,
 } from "react-icons/hi";
 
 const PanelPage = () => {
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    await fetch("/api/panel/logout", { method: "POST" });
+    router.replace("/panel/login");
+    router.refresh();
+  };
+
   // Panel menyu elementləri
   const menuItems = [
     {
@@ -40,56 +48,72 @@ const PanelPage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white pt-10 pb-20 px-4 md:px-0">
-      <div className="max-w-5xl mx-auto">
-        {/* ÜST BAŞLIK VE ÇIKIŞ */}
-        <div className="flex justify-between items-center mb-12">
+    <div className="min-h-screen bg-[#0a0a0a] px-4 pb-20 pt-8 text-white md:px-0">
+      <div className="mx-auto max-w-6xl">
+        <div className="mb-10 flex items-start justify-between gap-4 rounded-3xl border border-white/10 bg-white/5 p-6 md:p-8">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">
+            <p className="text-xs uppercase tracking-[0.25em] text-orange-400/90">
+              Yönetim Alanı
+            </p>
+            <h1 className="mt-2 text-3xl font-bold tracking-tight">
               Maki Yönetim Paneli
             </h1>
-            <p className="text-gray-500 mt-1">
-              Hoş geldin, Admin. Bugün neyi değiştirmek istersin?
+            <p className="mt-2 text-sm text-gray-400">
+              Hoş geldin Admin. İçerik yönetimi için aşağıdaki modüllerden birini seç.
             </p>
           </div>
-          <button className="p-3 bg-white/5 hover:bg-red-500/20 hover:text-red-500 rounded-xl transition-all border border-white/5">
+          <button
+            onClick={handleLogout}
+            className="rounded-xl border border-white/10 bg-white/5 p-3 transition-all hover:border-red-500/30 hover:bg-red-500/20 hover:text-red-400"
+            title="Çıkış Yap"
+          >
             <HiOutlineLogout size={24} />
           </button>
         </div>
 
-        {/* KONTROL KARTLARI - Responsive Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-3">
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+            <p className="text-xs text-gray-400">Modül Sayısı</p>
+            <p className="mt-2 text-2xl font-bold">{menuItems.length}</p>
+          </div>
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+            <p className="text-xs text-gray-400">Durum</p>
+            <p className="mt-2 text-2xl font-bold text-emerald-400">Sistem Aktif</p>
+          </div>
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+            <p className="text-xs text-gray-400">Kullanıcı</p>
+            <p className="mt-2 text-2xl font-bold">admin</p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
           {menuItems.map((item) => (
             <Link
               href={item.link}
               key={item.id}
-              className="group relative p-8 rounded-3xl bg-[oklch(37%_0.013_285.805_/_0.3)] border border-white/5 hover:border-white/20 transition-all duration-300 overflow-hidden"
+              className="group relative overflow-hidden rounded-3xl border border-white/10 bg-[oklch(37%_0.013_285.805_/_0.3)] p-8 transition-all duration-300 hover:-translate-y-1 hover:border-white/25"
             >
-              {/* Arka plan süsü (Hover'da canlanır) */}
               <div
-                className={`absolute -right-4 -top-4 w-24 h-24 rounded-full opacity-10 transition-transform duration-500 group-hover:scale-150 ${item.color.split(" ")[0]}`}
+                className={`absolute -right-4 -top-4 h-24 w-24 rounded-full opacity-10 transition-transform duration-500 group-hover:scale-150 ${item.color.split(" ")[0]}`}
               />
 
               <div className="relative flex items-start gap-6">
-                {/* İkon Kutusu */}
                 <div className={`p-4 rounded-2xl ${item.color}`}>
                   {item.icon}
                 </div>
 
-                {/* Yazılar */}
                 <div className="flex-1">
-                  <h3 className="text-xl font-bold group-hover:text-orange-400 transition-colors">
+                  <h3 className="text-xl font-bold transition-colors group-hover:text-orange-400">
                     {item.title}
                   </h3>
-                  <p className="text-gray-400 text-sm mt-2 leading-relaxed">
+                  <p className="mt-2 text-sm leading-relaxed text-gray-400">
                     {item.description}
                   </p>
                 </div>
               </div>
 
-              {/* Alt Ok İşareti */}
               <div className="mt-6 flex justify-end">
-                <span className="text-xs font-semibold uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity translate-x-2 group-hover:translate-x-0 duration-300">
+                <span className="translate-x-2 text-xs font-semibold uppercase tracking-widest opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100">
                   Yönetmeye Başla →
                 </span>
               </div>
@@ -97,11 +121,10 @@ const PanelPage = () => {
           ))}
         </div>
 
-        {/* ALT BİLGİ */}
-        <div className="mt-16 p-6 rounded-2xl border border-dashed border-white/10 text-center">
+        <div className="mt-14 rounded-2xl border border-dashed border-white/10 p-6 text-center">
           <p className="text-gray-500 text-sm">
-            Tüm değişiklikler anında Maki Restaurant web sitesinde canlıya
-            alınır. Lütfen görsellerin kalitesine dikkat edin.
+            Yapılan değişiklikler canlı sayfaya yansır. Görselleri yüksek kalite
+            ve uygun boyutta yüklemeyi unutmayın.
           </p>
         </div>
       </div>

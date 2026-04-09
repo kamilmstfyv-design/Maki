@@ -4,6 +4,9 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useState, Suspense } from "react";
 import { supabase } from "@/lib/supabase";
 import Image from "next/image";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const MenuContent = () => {
   const searchParams = useSearchParams();
@@ -45,99 +48,112 @@ const MenuContent = () => {
   };
 
   return (
-    <main className="min-h-screen bg-[#0f0f10] text-white pt-28 pb-20">
-      <div className="max-w-6xl mx-auto px-4">
-        {/* HEADER */}
-        <div className="mb-10">
-          <h1 className="text-4xl font-semibold tracking-tight">
-            {currentCategory === "all"
-              ? "Menü"
-              : currentCategory.replace("-", " ")}
-          </h1>
-        </div>
+    <div className="min-h-screen bg-[oklch(37%_0.013_285.805_/_0.6)] text-white">
+      <Header />
 
-        {/* CATEGORY */}
-        <div className="flex gap-2 overflow-x-auto pb-8">
-          <button
-            onClick={() => handleCategoryChange("all")}
-            className={`px-4 py-2 rounded-full text-sm transition ${
-              currentCategory === "all"
-                ? "bg-orange-500 text-white"
-                : "bg-white/5 text-gray-400 hover:bg-white/10"
-            }`}
-          >
-            Hepsi
-          </button>
-
-          {categories.map((cat) => (
-            <button
-              key={cat.id}
-              onClick={() => handleCategoryChange(cat.slug)}
-              className={`px-4 py-2 rounded-full text-sm transition ${
-                currentCategory === cat.slug
-                  ? "bg-orange-500 text-white"
-                  : "bg-white/5 text-gray-400 hover:bg-white/10"
-              }`}
-            >
-              {cat.name}
-            </button>
-          ))}
-        </div>
-
-        {/* CONTENT */}
-        {loading ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-5">
-            {[...Array(6)].map((_, i) => (
-              <div
-                key={i}
-                className="h-64 bg-white/5 rounded-xl animate-pulse"
-              />
-            ))}
+      <main className="pt-24 pb-20">
+        <div className="mx-auto max-w-6xl px-4">
+          <div className="mb-10">
+            <p className="text-xs uppercase tracking-[0.25em] text-orange-400/90">
+              Maki Restaurant
+            </p>
+            <h1 className="mt-2 text-4xl font-semibold tracking-tight">
+              {currentCategory === "all"
+                ? "Menü"
+                : currentCategory.replace("-", " ")}
+            </h1>
+            <p className="mt-2 max-w-xl text-sm text-gray-400">
+              Taze ve lezzetli seçenekleri kategoriye göre filtreleyip hızlıca
+              inceleyin.
+            </p>
           </div>
-        ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-5">
-            {products.map((item) => (
-              <div
-                key={item.id}
-                className="bg-[#18181b] rounded-xl overflow-hidden border border-white/5 hover:border-orange-400/40 hover:-translate-y-1 transition-all duration-300 group"
+
+          <div className="sticky top-16 z-20 -mx-2 mb-8 border-y border-white/10 bg-[#0f0f10]/65 px-2 py-3 backdrop-blur-md">
+            <div className="flex gap-2 overflow-x-auto">
+              <button
+                onClick={() => handleCategoryChange("all")}
+                className={`rounded-full px-4 py-2 text-sm font-medium transition ${
+                  currentCategory === "all"
+                    ? "bg-orange-500 text-white shadow-lg shadow-orange-500/30"
+                    : "bg-white/5 text-gray-300 hover:bg-white/10"
+                }`}
               >
-                {/* IMAGE */}
-                <div className="relative w-full h-40">
-                  <Image
-                    src={item.image_url}
-                    alt={item.name}
-                    fill
-                    sizes="(max-width:768px) 50vw, 33vw"
-                    className="object-cover group-hover:scale-105 transition duration-500"
-                  />
-                </div>
+                Hepsi
+              </button>
 
-                {/* CONTENT */}
-                <div className="p-4 space-y-2">
-                  <h3 className="text-sm font-semibold text-white line-clamp-1">
-                    {item.name}
-                  </h3>
+              {categories.map((cat) => (
+                <button
+                  key={cat.id}
+                  onClick={() => handleCategoryChange(cat.slug)}
+                  className={`rounded-full px-4 py-2 text-sm font-medium transition ${
+                    currentCategory === cat.slug
+                      ? "bg-orange-500 text-white shadow-lg shadow-orange-500/30"
+                      : "bg-white/5 text-gray-300 hover:bg-white/10"
+                  }`}
+                >
+                  {cat.name}
+                </button>
+              ))}
+            </div>
+          </div>
 
-                  <p className="text-xs text-gray-400 line-clamp-2">
-                    {item.description}
-                  </p>
+          {loading ? (
+            <div className="grid grid-cols-2 gap-5 md:grid-cols-3">
+              {[...Array(6)].map((_, i) => (
+                <Skeleton
+                  key={i}
+                  className="h-64 rounded-2xl bg-white/8"
+                />
+              ))}
+            </div>
+          ) : (
+            <div
+              key={currentCategory}
+              className="grid grid-cols-2 gap-5 motion-safe:animate-in motion-safe:fade-in-0 motion-safe:duration-300 md:grid-cols-3"
+            >
+              {products.map((item) => (
+                <div
+                  key={item.id}
+                  className="group overflow-hidden rounded-2xl border border-white/10 bg-[#18181b]/80 transition-all duration-300 hover:-translate-y-1 hover:border-orange-400/40"
+                >
+                  <div className="relative h-40 w-full overflow-hidden">
+                    <Image
+                      src={item.image_url}
+                      alt={item.name}
+                      fill
+                      sizes="(max-width:768px) 50vw, 33vw"
+                      className="object-cover transition duration-500 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+                  </div>
 
-                  <div className="pt-2">
-                    <span className="text-orange-400 font-semibold">
-                      {item.price} ₺
-                    </span>
+                  <div className="space-y-2 p-4">
+                    <h3 className="line-clamp-1 text-sm font-semibold text-white">
+                      {item.name}
+                    </h3>
+
+                    <p className="line-clamp-2 text-xs text-gray-400">
+                      {item.description}
+                    </p>
+
+                    <div className="pt-2">
+                      <span className="font-semibold text-orange-400">
+                        {item.price} ₺
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        )}
+              ))}
+            </div>
+          )}
 
-        {!loading && products.length === 0 && (
-          <div className="text-center py-20 text-gray-500">Ürün yok.</div>
-        )}
-      </div>
-    </main>
+          {!loading && products.length === 0 && (
+            <div className="py-20 text-center text-gray-400">Ürün yok.</div>
+          )}
+        </div>
+      </main>
+      <Footer />
+    </div>
   );
 };
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { supabase } from "@/lib/supabase";
+import { hasSupabaseEnv, supabase } from "@/lib/supabase";
 import Image from "next/image";
 import {
   HiOutlineTrash,
@@ -17,6 +17,11 @@ const CategoryPanel = () => {
 
   // 1. Kategorileri Getir
   const fetchCategories = async () => {
+    if (!supabase) {
+      setCategories([]);
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     const { data, error } = await supabase
       .from("maki_categories")
@@ -50,6 +55,10 @@ const CategoryPanel = () => {
   // 2. Kategori Ekle (Fotoğraf + DB)
   const handleAddCategory = async (e: React.ChangeEvent<HTMLInputElement>) => {
     try {
+      if (!supabase) {
+        alert("Supabase ortam değişkenleri eksik.");
+        return;
+      }
       if (!newName.trim()) {
         alert("Lütfen önce kategori adını yazın!");
         return;
@@ -97,6 +106,10 @@ const CategoryPanel = () => {
 
   // 3. Kategori Sil
   const handleDelete = async (id: number, imageUrl: string) => {
+    if (!supabase) {
+      alert("Supabase ortam değişkenleri eksik.");
+      return;
+    }
     if (!confirm("Bu kategoriyi silmek istediğinize emin misiniz?")) return;
 
     try {
@@ -121,6 +134,11 @@ const CategoryPanel = () => {
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white p-6 md:p-12">
       <div className="max-w-5xl mx-auto">
+        {!hasSupabaseEnv && (
+          <div className="mb-6 rounded-2xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-200">
+            Supabase ortam değişkenleri tanımlı değil. Kategori verileri yüklenemiyor.
+          </div>
+        )}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6">
           <div>
             <h1 className="text-3xl font-bold">Kategori Yönetimi</h1>

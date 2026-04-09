@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { supabase } from "@/lib/supabase";
+import { hasSupabaseEnv, supabase } from "@/lib/supabase";
 import Image from "next/image";
 import {
   HiOutlineTrash,
@@ -28,6 +28,12 @@ const ProductPanel = () => {
   });
 
   const fetchData = async () => {
+    if (!supabase) {
+      setCategories([]);
+      setProducts([]);
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     const { data: cats } = await supabase
       .from("maki_categories")
@@ -73,6 +79,7 @@ const ProductPanel = () => {
   // Əlavə etmə və ya Yeniləmə (Save or Update)
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!supabase) return alert("Supabase ortam değişkenleri eksik.");
     if (!productForm.image_url) return alert("Lütfen bir görsel seçin!");
 
     try {
@@ -120,6 +127,10 @@ const ProductPanel = () => {
   // Şəkil Yükləmə (Eyni qalır)
   const uploadImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
     try {
+      if (!supabase) {
+        alert("Supabase ortam değişkenleri eksik.");
+        return;
+      }
       if (!e.target.files || e.target.files.length === 0) return;
       setUploading(true);
       const file = e.target.files[0];
@@ -140,6 +151,7 @@ const ProductPanel = () => {
   };
 
   const toggleStatus = async (id: number, currentStatus: boolean) => {
+    if (!supabase) return;
     await supabase
       .from("maki_products")
       .update({ is_active: !currentStatus })
@@ -152,6 +164,10 @@ const ProductPanel = () => {
   };
 
   const handleDelete = async (id: number) => {
+    if (!supabase) {
+      alert("Supabase ortam değişkenleri eksik.");
+      return;
+    }
     if (!confirm("Silmek istediğinize emin misiniz?")) return;
     await supabase.from("maki_products").delete().eq("id", id);
     setProducts(products.filter((p) => p.id !== id));
@@ -160,6 +176,11 @@ const ProductPanel = () => {
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white p-6 md:p-12">
       <div className="max-w-6xl mx-auto">
+        {!hasSupabaseEnv && (
+          <div className="mb-6 rounded-2xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-200">
+            Supabase ortam değişkenleri tanımlı değil. Ürün verileri yüklenemiyor.
+          </div>
+        )}
         <h1 className="text-3xl font-bold mb-10">
           {editingId ? "Ürünü Düzenle" : "Ürün Yönetimi"}
         </h1>

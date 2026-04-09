@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { supabase } from "@/lib/supabase";
+import { hasSupabaseEnv, supabase } from "@/lib/supabase";
 import Image from "next/image";
 import {
   HiOutlineTrash,
@@ -17,6 +17,11 @@ const SliderPanel = () => {
   // 1. Verileri Getir (Stabil Sorgu)
   const fetchSlides = async () => {
     try {
+      if (!supabase) {
+        setSlides([]);
+        setLoading(false);
+        return;
+      }
       setLoading(true);
       const { data, error } = await supabase
         .from("my_slider")
@@ -39,6 +44,10 @@ const SliderPanel = () => {
   // 2. Fotoğraf Yükleme (Hata Kontrollü)
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     try {
+      if (!supabase) {
+        alert("Supabase ortam değişkenleri eksik.");
+        return;
+      }
       setUploading(true);
 
       if (!e.target.files || e.target.files.length === 0) return;
@@ -89,6 +98,10 @@ const SliderPanel = () => {
 
   // 3. Silme İşlemi (ID tipi Number olarak ayarlandı)
   const handleDelete = async (id: number, storagePath: string) => {
+    if (!supabase) {
+      alert("Supabase ortam değişkenleri eksik.");
+      return;
+    }
     const confirmDelete = confirm(
       "Bu görseli silmek istediğinize emin misiniz?",
     );
@@ -121,6 +134,11 @@ const SliderPanel = () => {
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white p-6 md:p-12">
       <div className="max-w-6xl mx-auto">
+        {!hasSupabaseEnv && (
+          <div className="mb-6 rounded-2xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-200">
+            Supabase ortam değişkenleri tanımlı değil. Slider verileri yüklenemiyor.
+          </div>
+        )}
         <div className="flex justify-between items-center mb-10">
           <div>
             <h1 className="text-3xl font-bold">Slider Yönetimi</h1>

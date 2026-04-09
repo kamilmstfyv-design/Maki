@@ -1,6 +1,6 @@
 "use client";
 
-import { supabase } from "@/lib/supabase";
+import { hasSupabaseEnv, supabase } from "@/lib/supabase";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -11,6 +11,10 @@ const CategorySection = () => {
 
   useEffect(() => {
     const fetchCategories = async () => {
+      if (!supabase) {
+        setLoading(false);
+        return;
+      }
       try {
         const { data, error } = await supabase
           .from("maki_categories")
@@ -43,6 +47,10 @@ const CategorySection = () => {
         </div>
       </section>
     );
+  }
+
+  if (!hasSupabaseEnv) {
+    return null;
   }
 
   return (

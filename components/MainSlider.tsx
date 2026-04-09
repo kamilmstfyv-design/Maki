@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Autoplay } from "swiper/modules";
 import Image from "next/image";
-import { supabase } from "@/lib/supabase";
+import { hasSupabaseEnv, supabase } from "@/lib/supabase";
 
 // Swiper Styles
 import "swiper/css";
@@ -16,6 +16,10 @@ const MainSlider = () => {
 
   useEffect(() => {
     const fetchSlides = async () => {
+      if (!supabase) {
+        setLoading(false);
+        return;
+      }
       const { data, error } = await supabase.from("my_slider").select("*");
       if (!error && data) {
         setSlides(data);
@@ -27,6 +31,7 @@ const MainSlider = () => {
   }, []);
 
   if (loading) return <SliderSkeleton />; // Yüklənərkən boşluq qalmasın
+  if (!hasSupabaseEnv) return null;
 
   return (
     <section className="my- relative w-full h-[500px] md:h-[650px] overflow-hidden">

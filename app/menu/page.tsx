@@ -2,7 +2,7 @@
 
 import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useState, Suspense } from "react";
-import { supabase } from "@/lib/supabase";
+import { hasSupabaseEnv, supabase } from "@/lib/supabase";
 import Image from "next/image";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -20,6 +20,10 @@ const MenuContent = () => {
 
   useEffect(() => {
     const fetchCats = async () => {
+      if (!supabase) {
+        setCategories([]);
+        return;
+      }
       const { data } = await supabase.from("maki_categories").select("*");
       if (data) setCategories(data);
     };
@@ -28,6 +32,11 @@ const MenuContent = () => {
 
   useEffect(() => {
     const fetchProducts = async () => {
+      if (!supabase) {
+        setProducts([]);
+        setLoading(false);
+        return;
+      }
       setLoading(true);
       let query = supabase.from("maki_products").select("*");
 
@@ -53,6 +62,11 @@ const MenuContent = () => {
 
       <main className="pt-24 pb-20">
         <div className="mx-auto max-w-6xl px-4">
+          {!hasSupabaseEnv && (
+            <div className="mb-6 rounded-2xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-200">
+              Supabase ortam değişkenleri tanımlı değil. Menü verileri yüklenemiyor.
+            </div>
+          )}
           <div className="mb-10">
             <p className="text-xs uppercase tracking-[0.25em] text-orange-400/90">
               Maki Restaurant

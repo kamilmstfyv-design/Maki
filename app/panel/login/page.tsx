@@ -1,9 +1,9 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
-const PanelLoginPage = () => {
+const PanelLoginContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [username, setUsername] = useState("");
@@ -88,6 +88,22 @@ const PanelLoginPage = () => {
         </form>
       </div>
     </main>
+  );
+};
+
+const PanelLoginPage = () => {
+  return (
+    <Suspense
+      fallback={
+        <main className="flex min-h-screen items-center justify-center bg-[#090909] p-4 text-white">
+          <div className="w-full max-w-md rounded-3xl border border-white/10 bg-gradient-to-b from-white/10 to-white/5 p-7 shadow-2xl shadow-black/40">
+            <p className="text-sm text-gray-300">Yukleniyor...</p>
+          </div>
+        </main>
+      }
+    >
+      <PanelLoginContent />
+    </Suspense>
   );
 };
 

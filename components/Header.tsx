@@ -3,13 +3,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { AiFillTikTok } from "react-icons/ai";
 import { RiInstagramLine } from "react-icons/ri";
+import MobileMenu from "./MobileMenu";
 
 const Header = () => {
   return (
     <header className="bg-[oklch(37%_0.013_285.805_/_0.6)] backdrop-blur-md">
       <div className="flex justify-between mx-auto max-w-7xl items-center  px-4">
         <div className=" md:hidden">
-          <Menu size={31} className="text-white" />
+          <MobileMenu />
         </div>
 
         <div className="relative w-20 h-10 md:w-25 md:h-10 rounded-lg overflow-hidden">

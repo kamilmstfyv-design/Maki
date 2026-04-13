@@ -17,6 +17,9 @@ const MenuContent = () => {
   const [products, setProducts] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [expandedProductId, setExpandedProductId] = useState<number | null>(
+    null,
+  );
 
   useEffect(() => {
     const fetchCats = async () => {
@@ -51,6 +54,31 @@ const MenuContent = () => {
 
     fetchProducts();
   }, [currentCategory]);
+
+  useEffect(() => {
+    if (expandedProductId === null) return;
+
+    const handleOutsideTouch = (event: MouseEvent | TouchEvent) => {
+      const target = event.target as HTMLElement | null;
+      if (!target) return;
+
+      const activeCard = target.closest(
+        `[data-product-card-id="${expandedProductId}"]`,
+      );
+
+      if (!activeCard) {
+        setExpandedProductId(null);
+      }
+    };
+
+    document.addEventListener("mousedown", handleOutsideTouch);
+    document.addEventListener("touchstart", handleOutsideTouch);
+
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideTouch);
+      document.removeEventListener("touchstart", handleOutsideTouch);
+    };
+  }, [expandedProductId]);
 
   const handleCategoryChange = (slug: string) => {
     router.push(`/menu?category=${slug}`, { scroll: false });
@@ -128,16 +156,21 @@ const MenuContent = () => {
               {products.map((item) => (
                 <div
                   key={item.id}
+                  data-product-card-id={item.id}
                   className="group overflow-hidden rounded-2xl border border-white/10 bg-[#18181b]/80 transition-all duration-300 hover:-translate-y-1 hover:border-orange-400/40"
                 >
                   <div className="relative h-40 w-full overflow-hidden">
-                    <Image
-                      src={item.image_url}
-                      alt={item.name}
-                      fill
-                      sizes="(max-width:768px) 50vw, 33vw"
-                      className="object-cover transition duration-500 group-hover:scale-105"
-                    />
+                    {item.image_url ? (
+                      <Image
+                        src={item.image_url}
+                        alt={item.name}
+                        fill
+                        sizes="(max-width:768px) 50vw, 33vw"
+                        className="object-cover transition duration-500 group-hover:scale-105"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 bg-gradient-to-br from-zinc-800 via-zinc-700 to-zinc-900" />
+                    )}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                   </div>
 
@@ -146,9 +179,28 @@ const MenuContent = () => {
                       {item.name}
                     </h3>
 
-                    <p className="line-clamp-2 text-xs text-gray-400">
+                    <p
+                      className={`text-xs text-gray-400 ${
+                        expandedProductId === item.id ? "" : "line-clamp-2"
+                      }`}
+                    >
                       {item.description}
                     </p>
+                    {(item.description || "").length > 90 && (
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setExpandedProductId(
+                            expandedProductId === item.id ? null : item.id,
+                          )
+                        }
+                        className="text-xs font-medium text-orange-400 hover:text-orange-300"
+                      >
+                        {expandedProductId === item.id
+                          ? "Daha az göster"
+                          : "Daha fazla oku"}
+                      </button>
+                    )}
 
                     <div className="pt-2">
                       <span className="font-semibold text-orange-400">

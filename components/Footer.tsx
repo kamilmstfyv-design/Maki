@@ -1,9 +1,9 @@
 import {
   RiInstagramLine,
-  RiFacebookCircleLine,
   RiWhatsappLine,
 } from "react-icons/ri";
-import { FiMapPin, FiPhone, FiClock } from "react-icons/fi";
+import { FiMapPin, FiPhone } from "react-icons/fi";
+import Link from "next/link";
 
 const Footer = () => {
   return (
@@ -20,14 +20,28 @@ const Footer = () => {
               misafirlerimize unutulmaz bir gastronomi deneyimi sunuyoruz.
             </p>
             <div className="flex gap-4 mt-2">
-              <RiInstagramLine
-                size={24}
-                className="text-white hover:text-orange-500 cursor-pointer transition"
-              />
-              <RiWhatsappLine
-                size={24}
-                className="text-white hover:text-orange-500 cursor-pointer transition"
-              />
+              <Link
+                href="https://www.instagram.com/maki_cesme?igsh=MWw3dXB4cXVmZnpqcg%3D%3D&utm_source=qr"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
+              >
+                <RiInstagramLine
+                  size={24}
+                  className="text-white hover:text-orange-500 cursor-pointer transition"
+                />
+              </Link>
+              <Link
+                href="https://wa.me/905428459464"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="WhatsApp"
+              >
+                <RiWhatsappLine
+                  size={24}
+                  className="text-white hover:text-orange-500 cursor-pointer transition"
+                />
+              </Link>
             </div>
           </div>
 
@@ -38,18 +52,20 @@ const Footer = () => {
               <li className="flex items-start gap-3 text-gray-400 hover:text-white transition cursor-pointer">
                 <FiMapPin size={20} className="text-orange-500 shrink-0" />
                 <span className="text-sm">
-                  Baku, Azerbaijan. 28 May Street, No: 12
+                  Çeşme İzmir. Ildır mah.37202sk no11
                 </span>
               </li>
               <li className="flex items-center gap-3 text-gray-400 hover:text-white transition cursor-pointer">
                 <FiPhone size={20} className="text-orange-500 shrink-0" />
-                <span className="text-sm">+994 55 512 01 57</span>
+                <a className="text-sm" href="tel:+905428459464">
+                  +90 542 845 94 64
+                </a>
               </li>
             </ul>
           </div>
 
           {/* SAĞ: ÇALIŞMA SAATLERİ */}
-          <div className="flex flex-col gap-6">
+          {/* <div className="flex flex-col gap-6">
             <h3 className="text-lg font-semibold text-white">
               Çalışma Saatleri
             </h3>
@@ -67,7 +83,7 @@ const Footer = () => {
                 <span className="text-white font-medium">10:00 - 00:00</span>
               </li>
             </ul>
-          </div>
+          </div> */}
         </div>
 
         {/* ALT ŞERİT: COPYRIGHT */}

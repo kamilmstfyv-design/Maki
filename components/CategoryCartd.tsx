@@ -65,35 +65,42 @@ const CategorySection = () => {
 
       {/* KATEQORİYA KARTLARI */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-        {categories.map((cat) => (
-          <Link
-            href={`/menu?category=${cat.slug}`}
-            scroll={false}
-            key={cat.id}
-            className="group relative aspect-square overflow-hidden rounded-2xl cursor-pointer shadow-lg"
-          >
-            {/* FOTOQRAF */}
-            <Image
-              src={cat.image_url} // Bazadakı sütun adının 'image' olduğundan əmin ol
-              alt={cat.name || "categories"}
-              fill
-              className="object-cover transition-transform duration-500 group-hover:scale-110"
-            />
+        {categories.map((cat) => {
+          const hasImage = Boolean(cat.image_url?.trim());
 
-            {/* QARALTMA */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
+          return (
+            <Link
+              href={`/menu?category=${cat.slug}`}
+              scroll={false}
+              key={cat.id}
+              className="group relative aspect-square overflow-hidden rounded-2xl cursor-pointer shadow-lg"
+            >
+              {hasImage ? (
+                <Image
+                  src={cat.image_url}
+                  alt={cat.name || "categories"}
+                  fill
+                  className="object-cover transition-transform duration-500 group-hover:scale-110"
+                />
+              ) : (
+                <div className="absolute inset-0 bg-gradient-to-br from-zinc-800 via-zinc-700 to-zinc-900" />
+              )}
 
-            {/* İÇİNDƏKİ YAZI */}
-            <div className="absolute inset-0 flex items-end justify-center p-6">
-              <h3 className="text-white text-xl md:text-2xl font-bold text-center drop-shadow-md">
-                {cat.name}
-              </h3>
-            </div>
+              {/* QARALTMA */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
 
-            {/* HOVER KƏNARLIĞI */}
-            <div className="absolute inset-0 border-2 border-transparent group-hover:border-white/30 rounded-2xl transition-all duration-300" />
-          </Link>
-        ))}
+              {/* İÇİNDƏKİ YAZI */}
+              <div className="absolute inset-0 flex items-end justify-center p-6">
+                <h3 className="text-white text-xl md:text-2xl font-bold text-center drop-shadow-md">
+                  {cat.name}
+                </h3>
+              </div>
+
+              {/* HOVER KƏNARLIĞI */}
+              <div className="absolute inset-0 border-2 border-transparent group-hover:border-white/30 rounded-2xl transition-all duration-300" />
+            </Link>
+          );
+        })}
       </div>
     </section>
   );

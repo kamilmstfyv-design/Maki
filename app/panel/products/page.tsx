@@ -80,7 +80,10 @@ const ProductPanel = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!supabase) return alert("Supabase ortam değişkenleri eksik.");
-    if (!productForm.image_url) return alert("Lütfen bir görsel seçin!");
+    const normalizedImageUrl =
+      typeof productForm.image_url === "string"
+        ? productForm.image_url.trim() || null
+        : null;
 
     try {
       setUploading(true);
@@ -94,7 +97,7 @@ const ProductPanel = () => {
             description: productForm.description,
             price: parseFloat(productForm.price),
             category_slug: productForm.category_slug,
-            image_url: productForm.image_url,
+            image_url: normalizedImageUrl,
           })
           .eq("id", editingId);
 
@@ -108,6 +111,7 @@ const ProductPanel = () => {
             {
               ...productForm,
               price: parseFloat(productForm.price),
+              image_url: normalizedImageUrl,
               is_active: true,
             },
           ]);
@@ -312,13 +316,17 @@ const ProductPanel = () => {
                   className="border-t border-white/5 hover:bg-white/10 transition"
                 >
                   <td className="p-4">
-                    <Image
-                      src={item.image_url}
-                      alt={item.name}
-                      width={48}
-                      height={48}
-                      className="rounded-lg object-cover h-12 w-12"
-                    />
+                    {item.image_url ? (
+                      <Image
+                        src={item.image_url}
+                        alt={item.name}
+                        width={48}
+                        height={48}
+                        className="rounded-lg object-cover h-12 w-12"
+                      />
+                    ) : (
+                      <div className="h-12 w-12 rounded-lg bg-gradient-to-br from-zinc-700 via-zinc-600 to-zinc-800" />
+                    )}
                   </td>
                   <td className="p-4 font-medium">{item.name}</td>
                   <td className="p-4 text-orange-500 font-bold">

@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { AiFillTikTok } from "react-icons/ai";
-import { RiInstagramLine } from "react-icons/ri";
+import { RiInstagramLine, RiWhatsappLine } from "react-icons/ri";
 import MobileMenu from "./MobileMenu";
 
 const Header = () => {
@@ -32,13 +31,23 @@ const Header = () => {
         </nav>
 
         <div className="flex items-center gap-2">
-          <Link href="/">
-            <AiFillTikTok
+          <Link
+            href="https://wa.me/905428459464"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="WhatsApp"
+          >
+            <RiWhatsappLine
               size={30}
               className="cursor-pointer text-white transition hover:text-orange-400"
             />
           </Link>
-          <Link href="/">
+          <Link
+            href="https://www.instagram.com/maki_cesme?igsh=MWw3dXB4cXVmZnpqcg%3D%3D&utm_source=qr"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Instagram"
+          >
             <RiInstagramLine
               size={30}
               className="cursor-pointer text-white transition hover:text-orange-400"
